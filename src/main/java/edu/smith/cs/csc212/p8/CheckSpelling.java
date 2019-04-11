@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.smith.cs.csc212.p8.CharTrie;
+import edu.smith.cs.csc212.p8.LLHash;
+import edu.smith.cs.csc212.p8.SortedStringListSet;
+
 public class CheckSpelling {
 	/**
 	 * Read all lines from the UNIX dictionary.
@@ -55,7 +59,28 @@ public class CheckSpelling {
 	public static List<String> createMixedDataset(List<String> yesWords, int numSamples, double fractionYes) {
 		// Hint to the ArrayList that it will need to grow to numSamples size:
 		List<String> output = new ArrayList<>(numSamples);
-		// TODO: select numSamples * fractionYes words from yesWords; create the rest as no words.
+		
+		List<String> noWords = new ArrayList<>();
+		
+		//number of yes words
+		double yesSample = numSamples * fractionYes;
+		Math.round(yesSample);
+		
+		//number of no words
+		double noSample = numSamples - yesSample;
+		Math.round(noSample);
+		
+		for (int i=0; i<yesWords.size(); i++) {
+			if (i<yesSample) {
+				String word = yesWords.get(i);
+				output.add(word);
+			}
+			
+			if (i<noSample) {
+				String word = yesWords.get(i) + "zzz";
+				output.add(word);
+			}
+		}
 		return output;
 	}
 	
@@ -66,6 +91,7 @@ public class CheckSpelling {
 		
 		// --- Create a bunch of data structures for testing:
 		TreeSet<String> treeOfWords = new TreeSet<>(listOfWords);
+		
 		HashSet<String> hashOfWords = new HashSet<>(listOfWords);
 		SortedStringListSet bsl = new SortedStringListSet(listOfWords);
 		CharTrie trie = new CharTrie();
@@ -76,6 +102,11 @@ public class CheckSpelling {
 		for (String w : listOfWords) {
 			hm100k.add(w);
 		}
+		
+		//calculates the size of the data structures
+		int listOfWordsSize = listOfWords.size();
+		int treeOfWordsSize = treeOfWords.size();
+		int hashOfWordsSize = hashOfWords.size();
 		
 		// --- Make sure that every word in the dictionary is in the dictionary:
 		timeLookup(listOfWords, treeOfWords);
@@ -119,5 +150,10 @@ public class CheckSpelling {
 		System.out.println("log_2 of listOfWords.size(): "+listOfWords.size());
 		
 		System.out.println("Done!");
+		
+		
+		System.out.println("ListOfWords size: " + listOfWordsSize);
+		System.out.println("treeOfWords size: " + treeOfWordsSize);
+		System.out.println("hashOfWords size: " + hashOfWordsSize);
 	}
 }
